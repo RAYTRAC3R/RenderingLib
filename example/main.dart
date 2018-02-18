@@ -1,5 +1,5 @@
 import 'dart:html';
-import 'package:DollLibCorrect/RendererLib.dart';
+import 'package:RenderingLib/RendererLib.dart';
 import 'dart:async';
 
 void main() {
@@ -9,6 +9,7 @@ void main() {
 }
 
 Future<bool> start() async {
-    await Loader.preloadManifest();
-
+    CanvasElement canvas = new CanvasElement(width: 130, height: 333);
+    Renderer.drawWhateverFuture(canvas, "images/4.png");
+    querySelector('#output').append(canvas);
 }
