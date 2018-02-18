@@ -10,6 +10,7 @@ library RendereringLib;
 
 
 export "src/loader/loader.dart";
+export "src/includes/bytebuilder.dart";
 export "src/Rendering/Renderer.dart";
 export "src/Misc/random.dart";
 export "src/Misc/weighted_lists.dart";
