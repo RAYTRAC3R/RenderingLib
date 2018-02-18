@@ -300,7 +300,7 @@ class Renderer {
 
     }
 
-    Future<Null> drawRandomPartOfRandomImage(CanvasElement canvas, Random rand, int subSetWidth) async {
+    static Future<Null> drawRandomPartOfRandomImage(CanvasElement canvas, Random rand, int subSetWidth) async {
         int minNum = 1;
         int maxNum = 13;
         String randomImageName = "images/${rand.nextInt(13)+minNum}.jpg";
