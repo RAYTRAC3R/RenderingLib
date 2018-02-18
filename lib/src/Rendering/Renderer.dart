@@ -300,6 +300,22 @@ class Renderer {
 
     }
 
+    Future<Null> drawRandomPartOfRandomImage(CanvasElement canvas, Random rand, int subSetWidth) async {
+        int minNum = 1;
+        int maxNum = 13;
+        String randomImageName = "images/${rand.nextInt(13)+minNum}.jpg";
+
+        ImageElement image = await Loader.getResource((randomImageName));
+        //print("got image $image");
+        canvas.context2D.imageSmoothingEnabled = false;
+
+        int startXMin = 0;
+        int startXMax = image.width -subSetWidth;
+        //canvas.context2D.drawImage(image, 0, 0);
+        canvas.context2D.drawImageToRect(image,new Rectangle(0,0,canvas.width,canvas.height), sourceRect: new Rectangle(rand.nextInt(startXMax),0,subSetWidth,image.height));
+
+    }
+
 
     static int simulateWrapTextToGetFontSize(CanvasRenderingContext2D ctx, String text, num x, num y, num lineHeight, int maxWidth, int maxHeight) {
         List<String> words = text.split(' ');
@@ -359,6 +375,57 @@ class Renderer {
         return lines.length;
     }
 
+    WordWrapMetaData wrapLoop(List<String> words, CanvasRenderingContext2D ctx, int maxWidth) {
+        List<String> lines = new List<String>();
+        int sliceFrom = 0;
+        for (int i = 0; i < words.length; i++) {
+            String chunk = words.sublist(sliceFrom, i).join(' ');
+            bool last = i == words.length - 1;
+            if (ctx.measureText(chunk).width > maxWidth) {
+                lines.add(words.sublist(sliceFrom, i).join(' '));
+                sliceFrom = i;
+            }
+            if (last) {
+                lines.add(words.sublist(sliceFrom, words.length).join(' '));
+                sliceFrom = i;
+            }
+        }
+        return new WordWrapMetaData(lines, ctx);
+    }
+
+
+
+//first, make sure no line will go off screen width
+//second, make sure all lines don't go off screen height
+//canvas.context2D, s, font, 10, 30, fontsize, width-buffer, height-bufferY
+    int wrapTextAndResizeIfNeeded(CanvasRenderingContext2D ctx, String text, String font, num x, num y, num fontSize, int maxWidth, int maxHeight) {
+        List<String> words = text.split(' ');
+        WordWrapMetaData data = wrapLoop(words, ctx, maxWidth);
+        //loop to keep within width. no easy calc for this, i THINK
+        while(data.largestLine > maxWidth) {
+            //print("Biggest line is ${data.largestLine} but can't be bigger than ${maxWidth}");
+            fontSize = fontSize - 1.0;
+            data.ctx.font = "${fontSize}px $font"; //since the data's context is what matters, make sure you use it
+        }
+
+        //take care of keeping in height
+        if((data.lines.length * fontSize)>maxHeight) {
+            int size = (maxHeight/data.lines.length).floor();
+            ctx.font = "${size}px $font";
+            fontSize = size;
+        }
+
+        num offsetY = 0.0;
+        num offsetX = 0;
+        if ( ctx.textAlign == 'center') offsetX = maxWidth ~/ 2;
+        for (int i = 0; i < data.lines.length; i++) {
+            ctx.fillText(data.lines[i], x + offsetX, y + offsetY);
+            offsetY = offsetY + fontSize;
+        }
+        return data.lines.length;
+    }
+
+
 
 }
 
@@ -369,4 +436,24 @@ class Size2D {
 
     Size2D(int this.width, int this.height);
 
+}
+
+class WordWrapMetaData {
+    List<String> lines;
+    CanvasRenderingContext2D ctx;
+
+    WordWrapMetaData(this.lines, this.ctx) {
+        //print("made word wrap meta data with ${lines.length} lines");
+    }
+
+    num get largestLine {
+        num biggestWidth = 0.0;
+        for(String line in lines) {
+            num size = ctx.measureText(line).width;
+            if(size > biggestWidth) biggestWidth = size;
+        }
+
+        return biggestWidth;
+
+    }
 }
