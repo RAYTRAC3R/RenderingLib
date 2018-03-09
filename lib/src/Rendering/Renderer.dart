@@ -194,6 +194,8 @@ class Renderer {
     }
 
     static Future<bool>  drawWhateverFuture(CanvasElement canvas, String imageString) async {
+        print("drawing $imageString, debug is $debug");
+
         if(debug) print("drawing $imageString");
         ImageElement image = await Loader.getResource((imageString));
         //print("got image $image");
