@@ -199,7 +199,7 @@ class Renderer {
 
         //if(debug) print("drawing $imageString");
         ImageElement image = await Loader.getResource((imageString));
-        image.crossOrigin = "Anonymous";
+        image.crossOrigin = "";
         //print("got image $image");
         canvas.context2D.imageSmoothingEnabled = false;
         canvas.context2D.drawImage(image, 0, 0);
