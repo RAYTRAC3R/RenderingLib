@@ -12,6 +12,7 @@ class Renderer {
     static int imagesWaiting = 0;
     static int imagesLoaded = 0;
 
+    //why doesn't this let me reset it???
     static bool debug = false;
 
 
@@ -194,9 +195,9 @@ class Renderer {
     }
 
     static Future<bool>  drawWhateverFuture(CanvasElement canvas, String imageString) async {
-        print("drawing $imageString, debug is $debug");
+        //print("drawing $imageString, debug is $debug");
 
-        if(debug) print("drawing $imageString");
+        //if(debug) print("drawing $imageString");
         ImageElement image = await Loader.getResource((imageString));
         //print("got image $image");
         canvas.context2D.imageSmoothingEnabled = false;
