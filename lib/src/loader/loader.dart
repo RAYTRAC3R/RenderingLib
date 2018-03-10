@@ -123,6 +123,7 @@ abstract class Loader {
         return completer.future;
     }
 
+    //jr is testing
     static String _getFullPath(String path, [bool absoluteRoot = false]) {
         // treat leading slashes as absolute root anyway
         if (path.startsWith("/")) {
