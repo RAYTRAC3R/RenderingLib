@@ -183,6 +183,13 @@ class Renderer {
         ctx.putImageData(img_data, 0, 0);
     }
 
+    static void drawUpsideDownAt(CanvasElement sourceCanvas, CanvasElement destinationCanvas, int x, int y, int divisor) {
+        destinationCanvas.context2D.translate(x, y);
+        destinationCanvas.context2D.rotate(180*Math.PI/180);
+        destinationCanvas.context2D.drawImageScaled(sourceCanvas, 0, 0, sourceCanvas.width/divisor, sourceCanvas.height/divisor);
+        destinationCanvas.context2D.restore();
+    }
+
 
     static void drawWhatever(CanvasElement canvas, String imageString) {
         if(debug) print("Trying to draw $imageString");
