@@ -184,8 +184,12 @@ class Renderer {
     }
 
     static void drawUpsideDownAt(CanvasElement sourceCanvas, CanvasElement destinationCanvas, int x, int y, int divisor) {
+        destinationCanvas.context2D.save();
+        //put teh origin at the place the object will be
         destinationCanvas.context2D.translate(x, y);
+        //rotate, which is always around the origin and not where i draw
         destinationCanvas.context2D.rotate(180*Math.PI/180);
+        //draw the thing at zero zero
         destinationCanvas.context2D.drawImageScaled(sourceCanvas, 0, 0, sourceCanvas.width/divisor, sourceCanvas.height/divisor);
         destinationCanvas.context2D.restore();
     }
