@@ -199,7 +199,6 @@ class Renderer {
         if(debug) print("Trying to draw $imageString");
         Loader.getResource(imageString).then((ImageElement loaded) {
             loaded.crossOrigin = "";
-
             //print("image $loaded loaded");
             canvas.context2D.imageSmoothingEnabled = false;
             canvas.context2D.drawImage(loaded, 0, 0);
