@@ -102,7 +102,7 @@ class Renderer {
         //doesn't look right :(
         //int x = (destination.width/2 - source.width/2).round();
         int x = (destination.width/2 - newWidth/2).ceil();
-        print("New dimensions: ${newWidth}, height: ${newHeight}");
+        //print("New dimensions: ${newWidth}, height: ${newHeight}");
         source.context2D.imageSmoothingEnabled = false;
         destination.context2D.imageSmoothingEnabled = false;
 
