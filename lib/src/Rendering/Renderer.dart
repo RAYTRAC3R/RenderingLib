@@ -415,7 +415,7 @@ class Renderer {
 //first, make sure no line will go off screen width
 //second, make sure all lines don't go off screen height
 //canvas.context2D, s, font, 10, 30, fontsize, width-buffer, height-bufferY
-    static int wrapTextAndResizeIfNeeded(CanvasRenderingContext2D ctx, String text, String font, num x, num y, num fontSize, int maxWidth, int maxHeight) {
+    static int wrapTextAndResizeIfNeeded(CanvasRenderingContext2D ctx, String text, String font, num x, num y, num fontSize, int maxWidth, int maxHeight, [int lineBuffer]) {
         List<String> words = text.split(' ');
         WordWrapMetaData data = wrapLoop(words, ctx, maxWidth);
         //loop to keep within width. no easy calc for this, i THINK
@@ -437,7 +437,7 @@ class Renderer {
         if ( ctx.textAlign == 'center') offsetX = maxWidth ~/ 2;
         for (int i = 0; i < data.lines.length; i++) {
             ctx.fillText(data.lines[i], x + offsetX, y + offsetY);
-            offsetY = offsetY + fontSize;
+            offsetY = offsetY + fontSize + lineBuffer;
         }
         return data.lines.length;
     }
