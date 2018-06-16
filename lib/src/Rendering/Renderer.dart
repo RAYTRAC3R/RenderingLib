@@ -398,7 +398,7 @@ class Renderer {
         for (int i = 0; i < words.length; i++) {
             String chunk = words.sublist(sliceFrom, i).join(' ');
             bool last = i == words.length - 1;
-            if (ctx.measureText(chunk).width > maxWidth) {
+            if (ctx.measureText(chunk).width > maxWidth || chunk.contains("\n")) {
                 lines.add(words.sublist(sliceFrom, i).join(' '));
                 sliceFrom = i;
             }
