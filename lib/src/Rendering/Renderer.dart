@@ -206,7 +206,7 @@ class Renderer {
 
     }
 
-    static Future<bool>  drawWhateverFuture(CanvasElement canvas, String imageString) async {
+    static Future<bool>  drawWhateverFuture(CanvasElement canvas, String imageString, [int x=0, int y = 0]) async {
         //print("drawing $imageString, debug is $debug");
 
         //if(debug) print("drawing $imageString");
@@ -214,14 +214,14 @@ class Renderer {
         image.crossOrigin = "";
         //print("got image $image");
         canvas.context2D.imageSmoothingEnabled = false;
-        canvas.context2D.drawImage(image, 0, 0);
+        canvas.context2D.drawImage(image, x, y);
         return true;
     }
 
-    static Future<bool>  drawExistingElementFuture(CanvasElement canvas, ImageElement image) async {
+    static Future<bool>  drawExistingElementFuture(CanvasElement canvas, ImageElement image, [int x=0, int y = 0]) async {
         //print("got image $image");
         canvas.context2D.imageSmoothingEnabled = false;
-        canvas.context2D.drawImage(image, 0, 0);
+        canvas.context2D.drawImage(image, x, y);
         return true;
     }
 
