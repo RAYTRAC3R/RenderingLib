@@ -168,10 +168,7 @@ class Renderer {
                     if (swap_a < 255) {
                         pixel_a = ((((pixel_a >> 24) / 255) * (swap_a / 255)) * 255).clamp(0, 255).floor() << 24;
                     }
-
-                    if (mapping.containsKey(pixel_rgb)) {
-                        pixels[i] = (swap & 0x00FFFFFF) | pixel_a;
-                    }
+                    pixels[i] = (swap & 0x00FFFFFF) | pixel_a;
                 }
             }
         }
