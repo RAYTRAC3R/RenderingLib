@@ -1,6 +1,7 @@
 
 import "dart:html";
 import 'dart:async';
+import "dart:typed_data";
 import "../includes/colour.dart";
 import "../includes/palette.dart";
 import "../Misc/random.dart";
@@ -119,7 +120,7 @@ class Renderer {
         ctx.drawImage(tmp_canvas, x, y);
     }
 
-    static void swapPalette(CanvasElement canvas, Palette source, Palette replacement) {
+    static void swapPaletteLegacy(CanvasElement canvas, Palette source, Palette replacement) {
         //print("swapping ${source.names} for ${replacement.names}");
         CanvasRenderingContext2D ctx = canvas.getContext('2d');
         ImageData img_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -137,6 +138,53 @@ class Renderer {
             }
         }
         ctx.putImageData(img_data, 0, 0);
+    }
+
+    static void swapPalette(CanvasElement canvas, Palette source, Palette replacement) {
+        CanvasRenderingContext2D ctx = canvas.context2D;
+        ImageData img_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        Uint32List pixels = img_data.data.buffer.asUint32List();
+
+        Map<int, int> mapping = <int,int>{};
+
+        for (String col in source.names) {
+            mapping[_swapPaletteFlipHex(source[col].toHex(true))] = _swapPaletteFlipHex(replacement[col].toHex(true));
+        }
+
+        int pixel, pixel_rgb, pixel_a;
+        int swap, swap_a;
+
+        for (int i = 0; i < pixels.length; i ++) {
+            pixel = pixels[i];
+            pixel_a = pixel & 0xFF000000;
+
+            if (pixel_a > 0) {
+                pixel_rgb = (pixel & 0x00FFFFFF) | 0xFF000000;
+
+                if (mapping.containsKey(pixel_rgb)) {
+                    swap = mapping[pixel_rgb];
+                    swap_a = (swap & 0xFF000000) >> 24;
+
+                    if (swap_a < 255) {
+                        pixel_a = ((((pixel_a >> 24) / 255) * (swap_a / 255)) * 255).clamp(0, 255).floor() << 24;
+                    }
+
+                    if (mapping.containsKey(pixel_rgb)) {
+                        pixels[i] = (swap & 0x00FFFFFF) | pixel_a;
+                    }
+                }
+            }
+        }
+        ctx.putImageData(img_data, 0, 0);
+    }
+
+    static int _swapPaletteFlipHex(int col) {
+        int r = (col & 0xFF000000) >> 24;
+        int g = (col & 0x00FF0000) >> 16;
+        int b = (col & 0x0000FF00) >> 8;
+        int a = (col & 0x000000FF);
+
+        return (a << 24) | (b << 16) | (g << 8) | r;
     }
 
     static void drawBGRadialWithWidth(CanvasElement canvas, num startX, num endX, num width, Colour color1, Colour color2) {
