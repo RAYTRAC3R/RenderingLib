@@ -1,17 +1,18 @@
 name: RenderingLib
 description: Rendering without the doll parts
-version: 0.0.1
-#homepage: https://www.example.com
-#author: JR <email@example.com>
+version: 0.0.2
+homepage: https://github.com/FarragoFiction/RenderingLib
+author: jadedResearcher, paradoxLands
 
 environment:
-  sdk: '>=1.20.1 <2.0.0'
+  sdk: '>=1.24.1 <2.0.0'
 
 dependencies:
   js: ^0.6.0
-  xml: "^2.6.0"
-  source_map_stack_trace: ^1.1.4
-  archive: "^1.0.31"
+  CommonLib:
+    git: git://github.com/FarragoFiction/CommonLib.git
+  LoaderLib:
+    git: git://github.com/FarragoFiction/LoaderLib.git
 
 dev_dependencies:
   browser: ^0.10.0
@@ -21,4 +22,3 @@ transformers:
 - $dart2js:
     sourceMaps: true
     commandLineOptions: [--fast-startup, --trust-type-annotations]
-    $exclude: ["web/manifest/tarbuilder.dart", "web/manifest/sourcemanifest.txt"]

@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:html';
 import 'package:RenderingLib/RendereringLib.dart';
-import 'dart:async';
+
+import "package:CommonLib/Colours.dart";
+import "package:LoaderLib/Loader.dart";
 
 void main() {
     querySelector('#output').text = 'Your Dart app is running.';
@@ -117,5 +120,5 @@ void testAction(Action action, int repeats) {
     int diff = now.microsecondsSinceEpoch - then.microsecondsSinceEpoch;
     double ms = diff / 1000;
 
-    print("Test complete: $repeats iterations, total time ${ms} ms, average ${ms / repeats}ms per iteration");
+    print("Test complete: $repeats iterations, total time $ms ms, average ${ms / repeats}ms per iteration");
 }

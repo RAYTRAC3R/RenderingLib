@@ -1,13 +1,11 @@
-
-import "dart:html";
 import 'dart:async';
-import "dart:typed_data";
-import "../includes/colour.dart";
-import "../includes/palette.dart";
-import "../Misc/random.dart";
+import "dart:html";
 import "dart:math" as Math;
+import "dart:typed_data";
 
-import "../loader/loader.dart";
+import "package:LoaderLib/Loader.dart";
+import "package:CommonLib/Colours.dart";
+import "package:CommonLib/Random.dart";
 
 class Renderer {
     static int imagesWaiting = 0;
@@ -95,7 +93,7 @@ class Renderer {
     }
 
 
-    static drawToFitCentered(CanvasElement destination, CanvasElement source) {
+    static void drawToFitCentered(CanvasElement destination, CanvasElement source) {
         //print("Drawing to fit width: ${destination.width}, height: ${destination.height}, native width is ${source.width} by ${source.height}");
         double ratio = scaleForSize(source.width, source.height, destination.width, destination.height);
         int newWidth = (source.width * ratio).ceil();
@@ -297,10 +295,10 @@ class Renderer {
         });
 
         imageObj.onError.listen((Event e){
-            querySelector("#loading_stats").appendHtml("Error loading image: " + imageObj.src);
-            print("Error loading image: " + imageObj.src);
+            querySelector("#loading_stats").appendHtml("Error loading image: ${imageObj.src}");
+            print("Error loading image: ${imageObj.src}");
         });
-        imageObj.src = "images/"+img;
+        imageObj.src = "images/$img";
     }
 
     static void checkDone(dynamic callback){
@@ -342,18 +340,18 @@ class Renderer {
         int height = bottomMostY - topMostY;
         //print("old width is ${canvas.width} x is $leftMostX right x is $rightMostX width is: $width, height is $height");
         CanvasElement ret = new CanvasElement(width: width, height: height);
-        ret.context2D.drawImageToRect(canvas,new Rectangle(0,0,width,height), sourceRect: new Rectangle(leftMostX,topMostY,width,height));
+        ret.context2D.drawImageToRect(canvas,new Rectangle<int>(0,0,width,height), sourceRect: new Rectangle<int>(leftMostX,topMostY,width,height));
         return ret;
     }
 
 
 
-    static void addImageTagLoading(url){
+    static void addImageTagLoading(String url){
         ////print(url);
         //only do it if image hasn't already been added.
         if(querySelector("#${escapeId(url)}") == null) {
             ////print("I couldn't find a document with id of: " + url);
-            String tag = '<img id="' + escapeId(url) + '" src = "images/' + url + '" class="loadedimg">';
+            String tag = '<img id="${escapeId(url)}" src = "images/$url" class="loadedimg">';
             //var urlID = urlToID(url);
             //String tag = '<img id ="' + urlID + '" src = "' + url + '" style="display:none">';
             querySelector("#loading_image_staging").appendHtml(tag,treeSanitizer: NodeTreeSanitizer.trusted);
@@ -364,17 +362,17 @@ class Renderer {
 
     }
 
-    static Future<Null> drawRandomPartOfImage(CanvasElement canvas, Random rand, int subSetWidth,randomImageName) async {
+    static Future<Null> drawRandomPartOfImage(CanvasElement canvas, Random rand, int subSetWidth,String randomImageName) async {
 
 
         ImageElement image = await Loader.getResource((randomImageName));
         //print("got image $image");
         canvas.context2D.imageSmoothingEnabled = false;
 
-        int startXMin = 0;
+        //int startXMin = 0;
         int startXMax = image.width -subSetWidth;
         //canvas.context2D.drawImage(image, 0, 0);
-        canvas.context2D.drawImageToRect(image,new Rectangle(0,0,canvas.width,canvas.height), sourceRect: new Rectangle(rand.nextInt(startXMax),0,subSetWidth,image.height));
+        canvas.context2D.drawImageToRect(image,new Rectangle<int>(0,0,canvas.width,canvas.height), sourceRect: new Rectangle<int>(rand.nextInt(startXMax),0,subSetWidth,image.height));
 
     }
 
