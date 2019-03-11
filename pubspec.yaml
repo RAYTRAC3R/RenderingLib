@@ -1,6 +1,6 @@
 name: RenderingLib
 description: Rendering without the doll parts
-version: 0.0.2
+version: 1.24.2
 homepage: https://github.com/FarragoFiction/RenderingLib
 author: jadedResearcher, paradoxLands
 
@@ -10,9 +10,13 @@ environment:
 dependencies:
   js: ^0.6.0
   CommonLib:
-    git: git://github.com/FarragoFiction/CommonLib.git
+    git:
+      url: git://github.com/FarragoFiction/CommonLib.git
+      ref: "Dart-1.24.2"
   LoaderLib:
-    git: git://github.com/FarragoFiction/LoaderLib.git
+    git:
+      url: git://github.com/FarragoFiction/LoaderLib.git
+      ref: "Dart-1.24.2"
 
 dev_dependencies:
   browser: ^0.10.0
