@@ -231,7 +231,7 @@ class Renderer {
         //put teh origin at the place the object will be
         destinationCanvas.context2D.translate(x, y);
         //rotate, which is always around the origin and not where i draw
-        destinationCanvas.context2D.rotate(180*Math.PI/180);
+        destinationCanvas.context2D.rotate(180*Math.pi/180);
         //draw the thing at zero zero
         destinationCanvas.context2D.drawImageScaled(sourceCanvas, 0, 0, sourceCanvas.width/divisor, sourceCanvas.height/divisor);
         destinationCanvas.context2D.restore();
@@ -240,7 +240,7 @@ class Renderer {
 
     static void drawWhatever(CanvasElement canvas, String imageString) {
         if(debug) print("Trying to draw $imageString");
-        Loader.getResource(imageString).then((ImageElement loaded) {
+        Loader.getResource<ImageElement>(imageString).then((ImageElement loaded) {
             loaded.crossOrigin = "";
             //print("image $loaded loaded");
             canvas.context2D.imageSmoothingEnabled = false;
