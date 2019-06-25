@@ -118,6 +118,7 @@ class Renderer {
         ctx.drawImage(tmp_canvas, x, y);
     }
 
+    @deprecated
     static void swapPaletteLegacy(CanvasElement canvas, Palette source, Palette replacement) {
         //print("swapping ${source.names} for ${replacement.names}");
         CanvasRenderingContext2D ctx = canvas.getContext('2d');
@@ -139,15 +140,13 @@ class Renderer {
     }
 
     static void swapPalette(CanvasElement canvas, Palette source, Palette replacement) {
+        swapPaletteMapped(canvas, makePaletteMapping(source, replacement));
+    }
+
+    static void swapPaletteMapped(CanvasElement canvas, Map<int,int> mapping) {
         CanvasRenderingContext2D ctx = canvas.context2D;
         ImageData img_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
         Uint32List pixels = img_data.data.buffer.asUint32List();
-
-        Map<int, int> mapping = <int,int>{};
-
-        for (String col in source.names) {
-            mapping[_swapPaletteFlipHex(source[col].toHex(true))] = _swapPaletteFlipHex(replacement[col].toHex(true));
-        }
 
         int pixel, pixel_rgb, pixel_a;
         int swap, swap_a;
@@ -173,13 +172,14 @@ class Renderer {
         ctx.putImageData(img_data, 0, 0);
     }
 
-    static int _swapPaletteFlipHex(int col) {
-        int r = (col & 0xFF000000) >> 24;
-        int g = (col & 0x00FF0000) >> 16;
-        int b = (col & 0x0000FF00) >> 8;
-        int a = (col & 0x000000FF);
+    static Map<int,int> makePaletteMapping(Palette source, Palette replacement) {
+        Map<int, int> mapping = <int,int>{};
 
-        return (a << 24) | (b << 16) | (g << 8) | r;
+        for (String col in source.names) {
+            mapping[source[col].toImageDataInt32()] = replacement[col].toImageDataInt32();
+        }
+
+        return mapping;
     }
 
     static void drawBGRadialWithWidth(CanvasElement canvas, num startX, num endX, num width, Colour color1, Colour color2) {
