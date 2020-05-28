@@ -241,7 +241,7 @@ class Renderer {
     static void drawWhatever(CanvasElement canvas, String imageString) {
         if(debug) print("Trying to draw $imageString");
         Loader.getResource<ImageElement>(imageString).then((ImageElement loaded) {
-            loaded.crossOrigin = "";
+            //loaded.crossOrigin = "";
             //print("image $loaded loaded");
             canvas.context2D.imageSmoothingEnabled = false;
             canvas.context2D.drawImage(loaded, 0, 0);
@@ -254,7 +254,7 @@ class Renderer {
 
         //if(debug) print("drawing $imageString");
         ImageElement image = await Loader.getResource((imageString));
-        image.crossOrigin = "";
+        //image.crossOrigin = "";
         //print("got image $image");
         canvas.context2D.imageSmoothingEnabled = false;
         canvas.context2D.drawImage(image, x, y);
