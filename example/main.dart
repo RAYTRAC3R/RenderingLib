@@ -6,7 +6,7 @@ import "package:CommonLib/Colours.dart";
 import "package:LoaderLib/Loader.dart";
 
 void main() {
-    querySelector('#output').text = 'Your Dart app is running.';
+    querySelector('#output')?.text = 'Your Dart app is running.';
     //start();
     testColourReplacement();
 }
@@ -14,7 +14,7 @@ void main() {
 Future<Null> start() async {
     CanvasElement canvas = new CanvasElement(width: 130, height: 333);
     Renderer.drawWhateverFuture(canvas, "images/4.png");
-    querySelector('#output').append(canvas);
+    querySelector('#output')?.append(canvas);
 }
 
 Palette REFERENCE = new Palette()
@@ -95,14 +95,14 @@ Future<Null> testColourReplacement() async {
         CanvasRenderingContext2D ctx = canvas.context2D;
         ctx.drawImage(img, 0, 0);
         Renderer.swapPaletteLegacy(canvas, REFERENCE, MIND);
-        querySelector("#output")..append(canvas);
+        querySelector("#output")?..append(canvas);
     }
     {
         CanvasElement canvas = new CanvasElement(width: img.width, height: img.height);
         CanvasRenderingContext2D ctx = canvas.context2D;
         ctx.drawImage(img, 0, 0);
         Renderer.swapPalette(canvas, REFERENCE, MIND);
-        querySelector("#output")..append(canvas);
+        querySelector("#output")?..append(canvas);
     }
 }
 

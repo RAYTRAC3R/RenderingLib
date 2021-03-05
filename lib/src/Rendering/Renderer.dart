@@ -17,7 +17,7 @@ class Renderer {
 
     static void grayscale(CanvasElement canvas) {
         CanvasRenderingContext2D ctx = canvas.context2D;
-        ImageData img_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        ImageData img_data = ctx.getImageData(0, 0, canvas.width!, canvas.height!);
         //4 byte color array
 
         for (int i = 0; i < img_data.data.length; i += 4) {
@@ -35,8 +35,8 @@ class Renderer {
 
     static void emboss(CanvasElement canvas) {
         bool opaque = false;
-        CanvasRenderingContext2D ctx = canvas.getContext('2d');
-        ImageData pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        CanvasRenderingContext2D ctx = canvas.context2D;
+        ImageData pixels = ctx.getImageData(0, 0, canvas.width!, canvas.height!);
         List<int> weights = <int>[ -3, 2, 0, -3, 2, 2, 0, 2, 3];
         int side = (Math.sqrt(weights.length)).round();
         int halfSide = (side ~/ 2);
@@ -46,7 +46,7 @@ class Renderer {
         // pad output by the convolution matrix
         int w = sw;
         int h = sh;
-        ImageData output = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        ImageData output = ctx.getImageData(0, 0, canvas.width!, canvas.height!);
         List<int> dst = output.data;
         // go through the destination image pixels
         int alphaFac = opaque ? 1 : 0;
@@ -95,12 +95,12 @@ class Renderer {
 
     static void drawToFitCentered(CanvasElement destination, CanvasElement source) {
         //print("Drawing to fit width: ${destination.width}, height: ${destination.height}, native width is ${source.width} by ${source.height}");
-        double ratio = scaleForSize(source.width, source.height, destination.width, destination.height);
-        int newWidth = (source.width * ratio).ceil();
-        int newHeight = (source.height * ratio).ceil();
+        double ratio = scaleForSize(source.width!, source.height!, destination.width!, destination.height!);
+        int newWidth = (source.width! * ratio).ceil();
+        int newHeight = (source.height! * ratio).ceil();
         //doesn't look right :(
         //int x = (destination.width/2 - source.width/2).round();
-        int x = (destination.width/2 - newWidth/2).ceil();
+        int x = (destination.width!/2 - newWidth/2).ceil();
         //print("New dimensions: ${newWidth}, height: ${newHeight}");
         source.context2D.imageSmoothingEnabled = false;
         destination.context2D.imageSmoothingEnabled = false;
@@ -114,15 +114,15 @@ class Renderer {
         return new CanvasElement(width: canvas.width, height: canvas.height);
     }
     static void copyTmpCanvasToRealCanvasAtPos(CanvasElement canvas, CanvasElement tmp_canvas, int x, int y) {
-        CanvasRenderingContext2D ctx = canvas.getContext('2d');
+        CanvasRenderingContext2D ctx = canvas.context2D;
         ctx.drawImage(tmp_canvas, x, y);
     }
 
     @deprecated
     static void swapPaletteLegacy(CanvasElement canvas, Palette source, Palette replacement) {
         //print("swapping ${source.names} for ${replacement.names}");
-        CanvasRenderingContext2D ctx = canvas.getContext('2d');
-        ImageData img_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        CanvasRenderingContext2D ctx = canvas.context2D;
+        ImageData img_data = ctx.getImageData(0, 0, canvas.width!, canvas.height!);
 
         for (int i = 0; i < img_data.data.length; i += 4) {
             Colour sourceColour = new Colour(img_data.data[i], img_data.data[i + 1], img_data.data[i + 2]);
@@ -145,7 +145,7 @@ class Renderer {
 
     static void swapPaletteMapped(CanvasElement canvas, Map<int,int> mapping) {
         CanvasRenderingContext2D ctx = canvas.context2D;
-        ImageData img_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        ImageData img_data = ctx.getImageData(0, 0, canvas.width!, canvas.height!);
         Uint32List pixels = img_data.data.buffer.asUint32List();
 
         int pixel, pixel_rgb, pixel_a;
@@ -159,7 +159,7 @@ class Renderer {
                 pixel_rgb = (pixel & 0x00FFFFFF) | 0xFF000000;
 
                 if (mapping.containsKey(pixel_rgb)) {
-                    swap = mapping[pixel_rgb];
+                    swap = mapping[pixel_rgb]!;
                     swap_a = (swap & 0xFF000000) >> 24;
 
                     if (swap_a < 255) {
@@ -183,32 +183,32 @@ class Renderer {
     }
 
     static void drawBGRadialWithWidth(CanvasElement canvas, num startX, num endX, num width, Colour color1, Colour color2) {
-        CanvasRenderingContext2D ctx = canvas.getContext("2d");
+        CanvasRenderingContext2D ctx = canvas.context2D;
 
-        CanvasGradient grd = ctx.createRadialGradient(width / 2, canvas.height / 2, 5, width, canvas.height, width);
+        CanvasGradient grd = ctx.createRadialGradient(width / 2, canvas.height! / 2, 5, width, canvas.height!, width);
         grd.addColorStop(0, color1.toStyleString());
         grd.addColorStop(1, color2.toStyleString());
 
         ctx.fillStyle = grd;
-        ctx.fillRect(startX, 0, endX, canvas.height);
+        ctx.fillRect(startX, 0, endX, canvas.height!);
     }
 
     static void drawBG(CanvasElement canvas, Colour color1, Colour color2) {
-        CanvasRenderingContext2D ctx = canvas.getContext("2d");
+        CanvasRenderingContext2D ctx = canvas.context2D;
 
         CanvasGradient grd = ctx.createLinearGradient(0, 0, 170, 0);
         grd.addColorStop(0, color1.toStyleString());
         grd.addColorStop(1, color2.toStyleString());
 
         ctx.fillStyle = grd;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, canvas.width!, canvas.height!);
     }
 
 
     //anything not transparent becomes a shade
     static void swapColors(CanvasElement canvas, Colour newc) {
-        CanvasRenderingContext2D ctx = canvas.getContext('2d');
-        ImageData img_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        CanvasRenderingContext2D ctx = canvas.context2D;
+        ImageData img_data = ctx.getImageData(0, 0, canvas.width!, canvas.height!);
         //4 byte color array
         for (int i = 0; i < img_data.data.length; i += 4) {
             if (img_data.data[i + 3] > 100) {
@@ -233,7 +233,7 @@ class Renderer {
         //rotate, which is always around the origin and not where i draw
         destinationCanvas.context2D.rotate(180*Math.pi/180);
         //draw the thing at zero zero
-        destinationCanvas.context2D.drawImageScaled(sourceCanvas, 0, 0, sourceCanvas.width/divisor, sourceCanvas.height/divisor);
+        destinationCanvas.context2D.drawImageScaled(sourceCanvas, 0, 0, sourceCanvas.width!/divisor, sourceCanvas.height!/divisor);
         destinationCanvas.context2D.restore();
     }
 
@@ -268,17 +268,17 @@ class Renderer {
         return true;
     }
 
-    static ImageElement imageSelector(String path) {
-        return querySelector("#${escapeId(path)}");
+    static ImageElement? imageSelector(String path) {
+        return querySelector("#${escapeId(path)}") as ImageElement;
     }
 
     static String escapeId(String toEscape) {
-        return toEscape.replaceAll(new RegExp(r"\.|\/"),"_");
+        return toEscape.replaceAll(new RegExp(r"\.|/"),"_");
     }
 
     static void clearCanvas(CanvasElement canvas) {
         CanvasRenderingContext2D ctx = canvas.context2D;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvas.width!, canvas.height!);
     }
 
 
@@ -295,31 +295,31 @@ class Renderer {
         });
 
         imageObj.onError.listen((Event e){
-            querySelector("#loading_stats").appendHtml("Error loading image: ${imageObj.src}");
+            querySelector("#loading_stats")?.appendHtml("Error loading image: ${imageObj.src}");
             print("Error loading image: ${imageObj.src}");
         });
         imageObj.src = "images/$img";
     }
 
     static void checkDone(dynamic callback){
-        if(querySelector("#loading_stats") != null) querySelector("#loading_stats").text = ("Images Loaded: $imagesLoaded");
+        if(querySelector("#loading_stats") != null) querySelector("#loading_stats")?.text = ("Images Loaded: $imagesLoaded");
         if((imagesLoaded != 0 && imagesWaiting == imagesLoaded)){
             callback();
         }
     }
 
     static CanvasElement cropToVisible(CanvasElement canvas) {
-        int leftMostX = canvas.width; //if i find a pixel with an x value smaler than this, it is now leftMostX
+        int leftMostX = canvas.width!; //if i find a pixel with an x value smaler than this, it is now leftMostX
         int rightMostX = 0; //if i find a pixel with an x value bigger than this, it is not rightMost X
         //or is it the other way around?
-        int topMostY = canvas.height;
+        int topMostY = canvas.height!;
         int bottomMostY = 0;
 
-        ImageData img_data = canvas.context2D.getImageData(0, 0, canvas.width, canvas.height);
+        ImageData img_data = canvas.context2D.getImageData(0, 0, canvas.width!, canvas.height!);
 
-        for(int x = 0; x<canvas.width; x ++) {
-            for(int y = 0; y<canvas.height; y++) {
-                int i = (y * canvas.width + x) * 4;
+        for(int x = 0; x<canvas.width!; x ++) {
+            for(int y = 0; y<canvas.height!; y++) {
+                int i = (y * canvas.width! + x) * 4;
                 if(img_data.data[i+3] >100) {
                     if(x < leftMostX) leftMostX = x;
                     if(x > rightMostX) rightMostX = x;
@@ -354,7 +354,7 @@ class Renderer {
             String tag = '<img id="${escapeId(url)}" src = "images/$url" class="loadedimg">';
             //var urlID = urlToID(url);
             //String tag = '<img id ="' + urlID + '" src = "' + url + '" style="display:none">';
-            querySelector("#loading_image_staging").appendHtml(tag,treeSanitizer: NodeTreeSanitizer.trusted);
+            querySelector("#loading_image_staging")?.appendHtml(tag,treeSanitizer: NodeTreeSanitizer.trusted);
         }else{
             ////print("I thought i found a document with id of: " + url);
 
@@ -370,9 +370,9 @@ class Renderer {
         canvas.context2D.imageSmoothingEnabled = false;
 
         //int startXMin = 0;
-        int startXMax = image.width -subSetWidth;
+        int startXMax = image.width! -subSetWidth;
         //canvas.context2D.drawImage(image, 0, 0);
-        canvas.context2D.drawImageToRect(image,new Rectangle<int>(0,0,canvas.width,canvas.height), sourceRect: new Rectangle<int>(rand.nextInt(startXMax),0,subSetWidth,image.height));
+        canvas.context2D.drawImageToRect(image,new Rectangle<int>(0,0,canvas.width!,canvas.height!), sourceRect: new Rectangle<int>(rand.nextInt(startXMax),0,subSetWidth,image.height!));
 
     }
 
@@ -386,7 +386,7 @@ class Renderer {
             bool last = i == words.length - 1;
             bool bigger = ctx
                 .measureText(chunk)
-                .width > maxWidth;
+                .width! > maxWidth;
             if (bigger) {
                 lines.add(words.sublist(sliceFrom, i).join(' '));
                 sliceFrom = i;
@@ -403,7 +403,7 @@ class Renderer {
 
 
     //http://stackoverflow.com/questions/5026961/html5-canvas-ctx-filltext-wont-do-line-breaks
-    static int wrap_text(CanvasRenderingContext2D ctx, String text, num x, num y, num lineHeight, int maxWidth, String textAlign) {
+    static int wrap_text(CanvasRenderingContext2D ctx, String text, num x, num y, num lineHeight, int maxWidth, String? textAlign) {
         if (textAlign == null) textAlign = 'center';
         ctx.textAlign = textAlign;
         List<String> words = text.split(' ');
@@ -414,7 +414,7 @@ class Renderer {
             bool last = i == words.length - 1;
             bool bigger = ctx
                 .measureText(chunk)
-                .width > maxWidth;
+                .width! > maxWidth;
             if (bigger) {
                 lines.add(words.sublist(sliceFrom, i).join(' '));
                 sliceFrom = i;
@@ -436,12 +436,12 @@ class Renderer {
     }
 
     static WordWrapMetaData wrapLoop(List<String> words, CanvasRenderingContext2D ctx, int maxWidth) {
-        List<String> lines = new List<String>();
+        List<String> lines = <String>[];
         int sliceFrom = 0;
         for (int i = 0; i < words.length; i++) {
             String chunk = words.sublist(sliceFrom, i).join(' ');
             bool last = i == words.length - 1;
-            if (ctx.measureText(chunk).width > maxWidth || chunk.contains("\n")) {
+            if (ctx.measureText(chunk).width! > maxWidth || chunk.contains("\n")) {
                 lines.add(words.sublist(sliceFrom, i).join(' '));
                 sliceFrom = i;
             }
@@ -509,7 +509,7 @@ class WordWrapMetaData {
     num get largestLine {
         num biggestWidth = 0.0;
         for(String line in lines) {
-            num size = ctx.measureText(line).width;
+            num size = ctx.measureText(line).width!;
             if(size > biggestWidth) biggestWidth = size;
         }
 

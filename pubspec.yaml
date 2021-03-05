@@ -1,11 +1,12 @@
 name: RenderingLib
 description: Rendering without the doll parts
-version: 2.8.1
+version: 2.12.0
 homepage: https://github.com/FarragoFiction/RenderingLib
 author: jadedResearcher, paradoxLands
+publish_to: none
 
 environment:
-  sdk: '>=2.8.1 <3.0.0'
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   js: any
